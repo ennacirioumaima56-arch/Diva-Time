@@ -1,0 +1,55 @@
+{{ form_start(form) }}
+    <div class="row g-4">
+        <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted mb-2">Full Name</label>
+            {{ form_widget(form.name, {'attr': {'class': 'form-control glass-input py-2 px-3'}}) }}
+            <div class="text-danger small mt-1">{{ form_errors(form.name) }}</div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted mb-2">Email Address</label>
+            {{ form_widget(form.email, {'attr': {'class': 'form-control glass-input py-2 px-3'}}) }}
+            <div class="text-danger small mt-1">{{ form_errors(form.email) }}</div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted mb-2">Access Level</label>
+            {{ form_widget(form.roles, {'attr': {'class': 'form-select glass-input py-2 px-3'}}) }}
+            <div class="text-danger small mt-1">{{ form_errors(form.roles) }}</div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted mb-2">Password</label>
+            {{ form_widget(form.password, {'attr': {'class': 'form-control glass-input py-2 px-3'}}) }}
+            <div class="text-danger small mt-1">{{ form_errors(form.password) }}</div>
+            {% if not user.id is null %}
+                <small class="text-muted d-block mt-2"><i class="fa-solid fa-circle-info me-1"></i> Leave empty to keep existing password.</small>
+            {% endif %}
+        </div>
+        <div class="col-12">
+            <div class="glass-card p-3 border-0 bg-opacity-25 bg-primary">
+                {{ form_row(form.isVerified) }}
+                <p class="text-muted small mb-0 ms-4 mt-1">When enabled, the user will be able to perform all actions associated with their role.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5 d-flex gap-3 justify-content-end">
+        <a href="{{ path('app_user_index') }}" class="btn btn-light px-4 py-2 border-0 rounded-3 text-muted">Cancel</a>
+        <button type="submit" class="btn btn-primary-glass px-5 py-2">
+            <i class="fa-solid fa-save me-2"></i> {{ button_label|default('Save Changes') }}
+        </button>
+    </div>
+{{ form_end(form) }}
+
+<style>
+    .glass-input {
+        background: rgba(255, 255, 255, 0.5) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s;
+    }
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+        transform: translateY(-1px);
+    }
+</style>

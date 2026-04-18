@@ -1,0 +1,48 @@
+{{ form_start(form) }}
+    <div class="row g-4">
+        <div class="col-12">
+            <label class="form-label fw-semibold text-muted mb-2">Project Name</label>
+            {{ form_widget(form.name, {'attr': {'class': 'form-control glass-input py-2 px-3'}}) }}
+            <div class="text-danger small mt-1">{{ form_errors(form.name) }}</div>
+        </div>
+        <div class="col-12">
+            <label class="form-label fw-semibold text-muted mb-2">Description</label>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control glass-input py-2 px-3'}}) }}
+            <div class="text-danger small mt-1">{{ form_errors(form.description) }}</div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted mb-2">Brand Color</label>
+            {{ form_widget(form.color, {'attr': {'class': 'form-control form-control-color glass-input w-100'}}) }}
+            <div class="text-danger small mt-1">{{ form_errors(form.color) }}</div>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+            <div class="glass-card p-3 w-100 border-0 bg-opacity-10 bg-primary">
+                <div class="form-check form-switch d-flex align-items-center gap-3">
+                    {{ form_widget(form.isActive) }}
+                    <label class="form-check-label fw-semibold text-muted">{{ form_label(form.isActive) }}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5 d-flex gap-3 justify-content-end">
+        <a href="{{ path('app_project_index') }}" class="btn btn-light px-4 py-2 border-0 rounded-3 text-muted">Cancel</a>
+        <button type="submit" class="btn btn-primary-glass px-5 py-2">
+            <i class="fa-solid fa-save me-2"></i> {{ button_label|default('Save Project') }}
+        </button>
+    </div>
+{{ form_end(form) }}
+
+<style>
+    .glass-input {
+        background: rgba(255, 255, 255, 0.5) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s;
+    }
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+    }
+</style>
