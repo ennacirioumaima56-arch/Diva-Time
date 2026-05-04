@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Project - TimeTrack{% endblock %}
+{% block title %}Nouveau Projet - DivaTime{% endblock %}
 
 {% block body %}
 <div class="row justify-content-center">
@@ -9,11 +9,11 @@
             <a href="{{ path('app_project_index') }}" class="btn btn-light rounded-circle shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <h2 class="fw-bold mb-0">Create New Project</h2>
+            <h2 class="fw-bold mb-0">Créer un Nouveau Projet</h2>
         </div>
 
         <div class="glass-card p-5">
-            {{ include('project/_form.html.twig', {'button_label': 'Create Project'}) }}
+            {{ include('project/_form.html.twig', {'button_label': 'Créer le Projet'}) }}
         </div>
     </div>
 </div>

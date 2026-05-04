@@ -6,12 +6,12 @@
             <div class="text-danger small mt-1">{{ form_errors(form.date) }}</div>
         </div>
         <div class="col-md-6">
-            <label class="form-label fw-semibold text-muted mb-2">Hours Worked</label>
+            <label class="form-label fw-semibold text-muted mb-2">Heures Travaillées</label>
             {{ form_widget(form.hours, {'attr': {'class': 'form-control glass-input py-2 px-3'}}) }}
             <div class="text-danger small mt-1">{{ form_errors(form.hours) }}</div>
         </div>
         <div class="col-12">
-            <label class="form-label fw-semibold text-muted mb-2">Project</label>
+            <label class="form-label fw-semibold text-muted mb-2">Projet</label>
             {{ form_widget(form.project, {'attr': {'class': 'form-select glass-input py-2 px-3'}}) }}
             <div class="text-danger small mt-1">{{ form_errors(form.project) }}</div>
         </div>
@@ -23,9 +23,9 @@
     </div>
     
     <div class="mt-5 d-flex gap-3 justify-content-end">
-        <a href="{{ path('app_time_entry_index') }}" class="btn btn-light px-4 py-2 border-0 rounded-3 text-muted">Cancel</a>
+        <a href="{{ path('app_time_entry_index') }}" class="btn btn-light px-4 py-2 border-0 rounded-3 text-muted">Annuler</a>
         <button type="submit" class="btn btn-primary-glass px-5 py-2">
-            <i class="fa-solid fa-save me-2"></i> {{ button_label|default('Save Entry') }}
+            <i class="fa-solid fa-save me-2"></i> {{ button_label|default('Enregistrer') }}
         </button>
     </div>
 {{ form_end(form) }}

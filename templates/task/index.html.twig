@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Tâches - DivaTime{% endblock %}
+
+{% block body %}
+<div class="container-fluid pb-5">
+    <!-- Zone en-tête -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-0">Tableau des Tâches</h1>
+            <p class="text-muted mb-0">Suivez et gérez les responsabilités de l'équipe</p>
+        </div>
+        
+        <div class="d-flex align-items-center gap-3">
+            <!-- Filtre projet -->
+            <form action="{{ path('app_task_index') }}" method="GET" class="d-flex gap-2">
+                <select name="project" class="form-select border-0 shadow-sm rounded-pill px-4" onchange="this.form.submit()" style="min-width: 200px;">
+                    <option value="">Tous les Projets</option>
+                    {% for project in projects %}
+                        <option value="{{ project.id }}" {{ currentProjectId == project.id ? 'selected' : '' }}>{{ project.name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
+            {% if isAdmin %}
+                <a href="{{ path('app_task_new') }}" class="btn btn-primary shadow-sm px-4 py-2 rounded-pill">
+                    <i class="fa-solid fa-plus me-2"></i> Créer une Tâche
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Colonnes tâches -->
+    <div class="row g-4">
+        {% set statuses = {
+            'pending': {'label': 'À Faire', 'icon': 'fa-clock', 'color': 'warning'},
+            'in_progress': {'label': 'En Cours', 'icon': 'fa-spinner', 'color': 'info'},
+            'completed': {'label': 'Terminé', 'icon': 'fa-check-circle', 'color': 'success'}
+        } %}
+
+        {% for status_key, status_info in statuses %}
+            <div class="col-12 col-md-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="badge bg-{{ status_info.color }}-subtle text-{{ status_info.color }} rounded-pill px-3 py-2 border border-{{ status_info.color }}">
+                        <i class="fa-solid {{ status_info.icon }} me-1"></i> {{ status_info.label }}
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for task in tasks %}
+                        {% if task.status == status_key %}
+                            <div class="glass-card p-3 slide-in border-start border-4 border-{{ status_info.color }}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-bold mb-0">{{ task.title }}</h6>
+                                    <div class="d-flex gap-1">
+                                        {% if isAdmin or task.assignedTo == app.user %}
+                                            <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn btn-sm btn-outline-primary border-0" title="Éditer">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                        {% endif %}
+                                        
+                                        {% if isAdmin %}
+                                            <form method="post" action="{{ path('app_task_delete', {'id': task.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?');" class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                                                <button class="btn btn-sm btn-outline-danger border-0" title="Supprimer">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <p class="text-muted small mb-3">{{ task.description|default('Aucune description')|slice(0, 100) }}...</p>
+                                
+                                <!-- Infos méta -->
+                                <div class="mb-3">
+                                    {% if task.estimatedHours %}
+                                        <div class="small fw-medium text-primary">
+                                            <i class="fa-solid fa-hourglass-half me-1"></i> 
+                                            Durée Max: <span class="fw-bold">{{ task.estimatedHours }} {{ task.estimatedDurationUnit|capitalize }}</span>
+                                        </div>
+                                    {% endif %}
+                                    {% if task.deadline %}
+                                        <div class="small fw-medium {{ date(task.deadline) < date() and task.status != 'completed' ? 'text-danger' : 'text-muted' }} mt-1">
+                                            <i class="fa-solid fa-calendar-day me-1"></i> 
+                                            Date Cible: {{ task.deadline|date('d M, H:i') }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="small text-muted mt-1">
+                                        <i class="fa-solid fa-user-circle me-1"></i> 
+                                        Assigné à: <span class="fw-bold text-dark">{{ task.assignedTo.name }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                                    <div class="badge border rounded-pill px-2 py-1 small" 
+                                         style="border-color: {{ task.project.color }}40 !important; color: {{ task.project.color }}; background: {{ task.project.color }}10;">
+                                        {{ task.project.name }}
+                                    </div>
+                                    
+                                    <div class="d-flex gap-1">
+                                        {# Only the specifically assigned user can mark as Done #}
+                                        {% if task.assignedTo == app.user and task.status != 'completed' %}
+                                            <form action="{{ path('app_task_update_status', {'id': task.id, 'status': 'completed'}) }}" method="POST">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('status' ~ task.id) }}">
+                                                <button class="btn btn-sm btn-success rounded-pill px-3 py-1 small shadow-sm" title="Marquer comme Terminé" style="font-size: 0.75rem;">
+                                                    <i class="fa-solid fa-check me-1"></i> Fait
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

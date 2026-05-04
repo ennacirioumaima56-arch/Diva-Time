@@ -38,7 +38,7 @@ security:
         - { path: ^/register, roles: ROLE_ADMIN }
         - { path: ^/project, roles: ROLE_ADMIN }
         - { path: ^/user, roles: ROLE_ADMIN }
-        - { path: ^/(dashboard|time-entry|$), roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/(dashboard|time-entry|tasks|messenger|$), roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

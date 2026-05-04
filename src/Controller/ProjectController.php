@@ -10,8 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/project')]
+#[IsGranted('ROLE_ADMIN')]
 class ProjectController extends AbstractController
 {
     #[Route('/', name: 'app_project_index', methods: ['GET'])]
@@ -34,7 +36,7 @@ class ProjectController extends AbstractController
             $entityManager->persist($project);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Project created successfully.');
+            $this->addFlash('success', 'Projet créé avec succès.');
             return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -53,7 +55,7 @@ class ProjectController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', 'Project updated successfully.');
+            $this->addFlash('success', 'Projet mis à jour avec succès.');
             return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -69,7 +71,7 @@ class ProjectController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$project->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($project);
             $entityManager->flush();
-            $this->addFlash('success', 'Project deleted successfully.');
+            $this->addFlash('success', 'Projet supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);

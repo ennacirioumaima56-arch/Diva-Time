@@ -1,7 +1,7 @@
 {{ form_start(form) }}
     <div class="row g-4">
         <div class="col-12">
-            <label class="form-label fw-semibold text-muted mb-2">Project Name</label>
+            <label class="form-label fw-semibold text-muted mb-2">Nom du Projet</label>
             {{ form_widget(form.name, {'attr': {'class': 'form-control glass-input py-2 px-3'}}) }}
             <div class="text-danger small mt-1">{{ form_errors(form.name) }}</div>
         </div>
@@ -11,7 +11,7 @@
             <div class="text-danger small mt-1">{{ form_errors(form.description) }}</div>
         </div>
         <div class="col-md-6">
-            <label class="form-label fw-semibold text-muted mb-2">Brand Color</label>
+            <label class="form-label fw-semibold text-muted mb-2">Couleur de Marque</label>
             {{ form_widget(form.color, {'attr': {'class': 'form-control form-control-color glass-input w-100'}}) }}
             <div class="text-danger small mt-1">{{ form_errors(form.color) }}</div>
         </div>
@@ -26,9 +26,9 @@
     </div>
     
     <div class="mt-5 d-flex gap-3 justify-content-end">
-        <a href="{{ path('app_project_index') }}" class="btn btn-light px-4 py-2 border-0 rounded-3 text-muted">Cancel</a>
+        <a href="{{ path('app_project_index') }}" class="btn btn-light px-4 py-2 border-0 rounded-3 text-muted">Annuler</a>
         <button type="submit" class="btn btn-primary-glass px-5 py-2">
-            <i class="fa-solid fa-save me-2"></i> {{ button_label|default('Save Project') }}
+            <i class="fa-solid fa-save me-2"></i> {{ button_label|default('Enregistrer le Projet') }}
         </button>
     </div>
 {{ form_end(form) }}

@@ -1,0 +1,233 @@
+<turbo-frame id="dashboard-content">
+    <!-- Aperçu stats -->
+    <div class="row g-4 mb-5">
+        <div class="col-12 col-md-3">
+            <div class="glass-card h-100 border-0 shadow-sm position-relative overflow-hidden">
+                <div class="position-absolute opacity-10" style="right: -10px; bottom: -10px; font-size: 5rem;">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="small text-muted mb-1 text-uppercase fw-bold letter-spacing-1">
+                    {% if isAdmin %}Heures Totales d'Équipe{% else %}Vos Heures Totales{% endif %}
+                </div>
+                <div class="d-flex align-items-center gap-3 mt-2">
+                    <div class="h1 fw-bold mb-0 text-primary">{{ totalHours }}</div>
+                    <div class="badge bg-primary-subtle text-primary rounded-pill px-3">H</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <div class="glass-card h-100 border-0 shadow-sm position-relative overflow-hidden">
+                <div class="position-absolute opacity-10" style="right: -10px; bottom: -10px; font-size: 5rem;">
+                    <i class="fa-solid fa-diagram-project"></i>
+                </div>
+                <div class="small text-muted mb-1 text-uppercase fw-bold letter-spacing-1">Projets Actifs</div>
+                <div class="d-flex align-items-center gap-3 mt-2">
+                    <div class="h1 fw-bold mb-0 text-info">{{ activeProjectsCount }}</div>
+                    <div class="badge bg-info-subtle text-info rounded-pill px-3">En Ligne</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <div class="glass-card h-100 border-0 shadow-sm position-relative overflow-hidden">
+                <div class="position-absolute opacity-10" style="right: -10px; bottom: -10px; font-size: 5rem;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="small text-muted mb-1 text-uppercase fw-bold letter-spacing-1">Membres de l'Équipe</div>
+                <div class="d-flex align-items-center gap-3 mt-2">
+                    <div class="h1 fw-bold mb-0 text-success">{{ totalUsersCount }}</div>
+                    <div class="badge bg-success-subtle text-success rounded-pill px-3">Actif</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <div class="glass-card h-100 border-0 shadow-sm position-relative overflow-hidden">
+                <div class="position-absolute opacity-10" style="right: -10px; bottom: -10px; font-size: 5rem;">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div class="small text-muted mb-1 text-uppercase fw-bold letter-spacing-1">Total Tâches</div>
+                <div class="d-flex align-items-center gap-3 mt-2">
+                    <div class="h1 fw-bold mb-0 text-warning">{{ totalTasks }}</div>
+                    <div class="badge bg-warning-subtle text-warning rounded-pill px-3">Tâches</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Graphiques -->
+    <div class="row g-4 mb-5">
+
+        <!-- Graphique 1: Heures par jour (7 derniers jours) -->
+        <div class="col-12 col-lg-7">
+            <div class="glass-card border-0 shadow-sm h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-chart-column text-primary me-2"></i>
+                        Activité des 7 Derniers Jours
+                    </h5>
+                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3">Heures</span>
+                </div>
+                <div style="position: relative; height: 220px;">
+                    <canvas id="hoursBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique 2: Répartition par projet -->
+        <div class="col-12 col-lg-5">
+            <div class="glass-card border-0 shadow-sm h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-chart-pie text-info me-2"></i>
+                        Heures par Projet
+                    </h5>
+                    <span class="badge bg-info-subtle text-info rounded-pill px-3">Répartition</span>
+                </div>
+                <div style="position: relative; height: 220px;" class="d-flex align-items-center justify-content-center">
+                    <canvas id="projectDoughnutChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statut des Tâches -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="glass-card border-0 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-circle-half-stroke text-warning me-2"></i>
+                        Progression des Tâches
+                    </h5>
+                    <span class="small text-muted">{{ totalTasks }} tâches au total</span>
+                </div>
+                <div class="row g-3">
+                    <!-- À Faire -->
+                    <div class="col-12 col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="rounded-circle d-inline-block" style="width:10px;height:10px;background:#f59e0b;"></span>
+                                <span class="fw-semibold small">À Faire</span>
+                            </div>
+                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3">{{ taskStatsPending }}</span>
+                        </div>
+                        <div class="progress rounded-pill" style="height: 8px;">
+                            <div class="progress-bar bg-warning rounded-pill"
+                                 style="width: {{ totalTasks > 0 ? ((taskStatsPending / totalTasks) * 100)|round : 0 }}%">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- En Cours -->
+                    <div class="col-12 col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="rounded-circle d-inline-block" style="width:10px;height:10px;background:#6366f1;"></span>
+                                <span class="fw-semibold small">En Cours</span>
+                            </div>
+                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3">{{ taskStatsInProgress }}</span>
+                        </div>
+                        <div class="progress rounded-pill" style="height: 8px;">
+                            <div class="progress-bar rounded-pill"
+                                 style="width: {{ totalTasks > 0 ? ((taskStatsInProgress / totalTasks) * 100)|round : 0 }}%; background: linear-gradient(90deg, #6366f1, #a855f7);">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Terminé -->
+                    <div class="col-12 col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="rounded-circle d-inline-block" style="width:10px;height:10px;background:#22c55e;"></span>
+                                <span class="fw-semibold small">Terminé</span>
+                            </div>
+                            <span class="badge bg-success-subtle text-success rounded-pill px-3">{{ taskStatsCompleted }}</span>
+                        </div>
+                        <div class="progress rounded-pill" style="height: 8px;">
+                            <div class="progress-bar bg-success rounded-pill"
+                                 style="width: {{ totalTasks > 0 ? ((taskStatsCompleted / totalTasks) * 100)|round : 0 }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activité récente -->
+    <div class="row">
+        <div class="col-12">
+            <div class="glass-card border-0 shadow-sm overflow-hidden p-0">
+                <div class="d-flex justify-content-between align-items-center p-4 border-bottom bg-white bg-opacity-25">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fa-solid fa-list-check text-primary me-2"></i>
+                        {% if isAdmin %}Activité Récente de l'Équipe{% else %}Vos Entrées Récentes{% endif %}
+                    </h5>
+                    <a href="{{ path('app_time_entry_index') }}" target="_top" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                        Voir Tout <i class="fa-solid fa-arrow-right small ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light bg-opacity-50">
+                            <tr>
+                                <th class="ps-4 border-0 text-muted small text-uppercase py-3">Date</th>
+                                {% if isAdmin %}<th class="border-0 text-muted small text-uppercase py-3">Utilisateur</th>{% endif %}
+                                <th class="border-0 text-muted small text-uppercase py-3">Projet</th>
+                                <th class="border-0 text-muted small text-uppercase py-3">Durée</th>
+                                <th class="border-0 text-muted small text-uppercase py-3">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in recentEntries %}
+                                <tr class="border-bottom-0">
+                                    <td class="ps-4 py-3">
+                                        <div class="fw-bold">{{ entry.date|date('d M Y') }}</div>
+                                        <div class="small text-muted d-md-none">{{ entry.project.name }}</div>
+                                    </td>
+                                    {% if isAdmin %}
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center small" style="width: 24px; height: 24px; font-size: 10px;">
+                                                {{ entry.user.name|slice(0, 1)|upper }}
+                                            </div>
+                                            <span class="small fw-medium">{{ entry.user.name }}</span>
+                                        </div>
+                                    </td>
+                                    {% endif %}
+                                    <td>
+                                        <span class="badge border fw-medium rounded-pill px-3 py-2"
+                                              style="border-color: {{ entry.project.color }}40 !important; color: {{ entry.project.color }}; background: {{ entry.project.color }}10;">
+                                            <i class="fa-solid fa-circle small me-1 opacity-50" style="color: {{ entry.project.color }};"></i>
+                                            {{ entry.project.name }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ entry.hours }} <small class="text-muted fw-normal">h</small></div>
+                                    </td>
+                                    <td class="text-muted">
+                                        <div class="text-truncate small" style="max-width: 250px;">
+                                            {{ entry.note|default('Aucune note fournie') }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="{% if isAdmin %}5{% else %}4{% endif %}" class="text-center py-5">
+                                        <div class="my-3 opacity-25">
+                                            <i class="fa-solid fa-clipboard-list h1"></i>
+                                        </div>
+                                        <p class="text-muted">Aucune activité enregistrée.</p>
+                                        <a href="{{ path('app_time_entry_new') }}" target="_top" class="btn btn-primary-glass btn-sm">Commencer le Suivi</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</turbo-frame>
+

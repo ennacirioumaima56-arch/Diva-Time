@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}DivaTime - Login{% endblock %}
+{% block title %}DivaTime - Connexion{% endblock %}
 
 {% block body %}
 <div class="row justify-content-center align-items-center min-vh-100 m-0">
-    <div class="col-12 col-md-6 col-lg-5" style="margin-top: 40px;">
-        <!-- Logo Section -->
+    <div class="col-12 col-md-8 col-lg-6" style="margin-top: 20px; max-width: 600px;">
+        <!-- Section logo -->
         <div class="text-center mb-n5" style="z-index: 20; position: relative; pointer-events: none;">
             <div class="d-inline-block">
                 <img src="{{ asset('img/logo.png') }}" alt="DivaTime Logo" style="max-height: 140px; width: auto; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));">
             </div>
         </div>
 
-        <!-- Login Card -->
-        <div class="glass-card p-5 pt-4 border-0 shadow-lg" style="position: relative; z-index: 5;">
+        <!-- Carte connexion -->
+        <div class="glass-card p-5 border-0 shadow-lg" style="position: relative; z-index: 5;">
             <form method="post">
                 {% if error %}
                     <div class="alert alert-danger bg-danger-subtle border-0 text-danger rounded-3 mb-4">
@@ -29,19 +29,19 @@
                 {% endif %}
 
                 <div class="mb-4">
-                    <label for="username" class="form-label text-muted fw-semibold">Email Address</label>
+                    <label for="username" class="form-label text-muted fw-semibold">Adresse Email</label>
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-0 border-bottom border-muted rounded-0 px-0 me-3">
                             <i class="fa-solid fa-envelope text-muted opacity-50"></i>
                         </span>
                         <input type="email" value="{{ last_username }}" name="_username" id="username" 
                                class="form-control bg-transparent border-0 border-bottom rounded-0 px-0 focus-none" 
-                               placeholder="your@email.com" autocomplete="email" required autofocus>
+                               placeholder="votre@email.com" autocomplete="email" required autofocus>
                     </div>
                 </div>
 
                 <div class="mb-5">
-                    <label for="password" class="form-label text-muted fw-semibold">Password</label>
+                    <label for="password" class="form-label text-muted fw-semibold">Mot de passe</label>
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-0 border-bottom border-muted rounded-0 px-0 me-3">
                             <i class="fa-solid fa-lock text-muted opacity-50"></i>
@@ -55,17 +55,39 @@
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                 <button class="btn btn-primary-glass w-100 py-3 shadow-sm" type="submit">
-                    <i class="fa-solid fa-arrow-right-to-bracket me-2"></i> Sign In to DivaTime
+                    <i class="fa-solid fa-arrow-right-to-bracket me-2"></i> Se connecter à DivaTime
                 </button>
 
                 <div class="text-center mt-4">
-                    <a href="#" class="text-muted small text-decoration-none hover-primary">Forgot your password?</a>
+                    <a href="#" class="text-muted small text-decoration-none hover-primary" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Mot de passe oublié ?</a>
                 </div>
             </form>
         </div>
 
+        <!-- Modal passe -->
+        <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content glass-card border-0">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold">Mot de passe oublié ?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center py-4">
+                        <div class="mb-4">
+                            <i class="fa-solid fa-user-shield text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <p class="mb-0">Veuillez contacter votre administrateur ou manager pour réinitialiser votre mot de passe.</p>
+                        <p class="text-muted small mt-2">La politique de sécurité de DivaTime requiert une vérification manuelle pour la réinitialisation du mot de passe.</p>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-primary-glass w-100 rounded-pill" data-bs-dismiss="modal">Je comprends</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="text-center mt-3">
-            <p class="text-muted small">&copy; {{ "now"|date("Y") }} DivaTime Inc. All rights reserved.</p>
+            <p class="text-muted small">&copy; {{ "now"|date("Y") }} DivaTime Inc. Tous droits réservés.</p>
         </div>
     </div>
 </div>

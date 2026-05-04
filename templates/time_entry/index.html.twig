@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Time Log - DivaTime{% endblock %}
+{% block title %}Journal de Temps - DivaTime{% endblock %}
 
 {% block body %}
 <div class="mb-5 d-flex justify-content-between align-items-center">
     <div>
-        <h2 class="fw-bold mb-1">Activity Log</h2>
-        <p class="text-muted mb-0">Review and manage your daily contributions.</p>
+        <h2 class="fw-bold mb-1">Journal d'Activité</h2>
+        <p class="text-muted mb-0">Passez en revue et gérez vos contributions quotidiennes.</p>
     </div>
     <a href="{{ path('app_time_entry_new') }}" class="btn btn-primary-glass">
-        <i class="fa-solid fa-clock-rotate-left me-2"></i> Log New Session
+        <i class="fa-solid fa-clock-rotate-left me-2"></i> Enregistrer une Nouvelle Session
     </a>
 </div>
 
@@ -19,8 +19,8 @@
             <thead>
                 <tr class="text-muted small">
                     <th class="border-0">Date</th>
-                    <th class="border-0">Project</th>
-                    <th class="border-0">Hours</th>
+                    <th class="border-0">Projet</th>
+                    <th class="border-0">Heures</th>
                     <th class="border-0">Description</th>
                     <th class="border-0 text-end">Actions</th>
                 </tr>
@@ -42,17 +42,17 @@
                         </td>
                         <td>
                             <span class="text-muted small d-inline-block text-truncate" style="max-width: 300px;">
-                                {{ entry.note|default('No description.') }}
+                                {{ entry.note|default('Aucune description.') }}
                             </span>
                         </td>
                         <td class="text-end">
                             <div class="d-flex gap-2 justify-content-end">
-                                <a href="{{ path('app_time_entry_edit', {'id': entry.id}) }}" class="btn btn-sm btn-light border-0 rounded-circle shadow-sm" title="Edit">
+                                <a href="{{ path('app_time_entry_edit', {'id': entry.id}) }}" class="btn btn-sm btn-light border-0 rounded-circle shadow-sm" title="Éditer">
                                     <i class="fa-solid fa-edit p-1"></i>
                                 </a>
-                                <form method="post" action="{{ path('app_time_entry_delete', {'id': entry.id}) }}" onsubmit="return confirm('Are you sure you want to delete this entry?');" style="display:inline-block">
+                                <form method="post" action="{{ path('app_time_entry_delete', {'id': entry.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?');" style="display:inline-block">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entry.id) }}">
-                                    <button class="btn btn-sm btn-light text-danger border-0 rounded-circle shadow-sm" title="Delete">
+                                    <button class="btn btn-sm btn-light text-danger border-0 rounded-circle shadow-sm" title="Supprimer">
                                         <i class="fa-solid fa-trash p-1"></i>
                                     </button>
                                 </form>
@@ -63,7 +63,7 @@
                     <tr>
                         <td colspan="5" class="text-center py-5">
                             <i class="fa-solid fa-clock h1 opacity-25 d-block mb-3"></i>
-                            <p class="text-muted mb-0">No time entries recorded yet.</p>
+                            <p class="text-muted mb-0">Aucune entrée de temps enregistrée.</p>
                         </td>
                     </tr>
                 {% endfor %}

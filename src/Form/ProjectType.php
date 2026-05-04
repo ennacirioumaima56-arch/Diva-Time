@@ -17,19 +17,19 @@ class ProjectType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Project Name',
-                'attr' => ['class' => 'form-control rounded-3', 'placeholder' => 'Enter project name']
+                'label' => 'Nom du Projet',
+                'attr' => ['class' => 'form-control rounded-3', 'placeholder' => 'Entrez le nom du projet']
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
-                'attr' => ['class' => 'form-control rounded-3', 'rows' => 3, 'placeholder' => 'Project objectives...']
+                'attr' => ['class' => 'form-control rounded-3', 'rows' => 3, 'placeholder' => 'Objectifs du projet...']
             ])
             ->add('color', ColorType::class, [
-                'label' => 'Brand Color',
+                'label' => 'Couleur de la Marque',
                 'attr' => ['class' => 'form-control form-control-color rounded-3', 'style' => 'width: 100%']
             ])
             ->add('isActive', CheckboxType::class, [
-                'label' => 'Project Active?',
+                'label' => 'Projet Actif ?',
                 'required' => false,
                 'attr' => ['class' => 'form-check-input'],
                 'label_attr' => ['class' => 'form-check-label'],

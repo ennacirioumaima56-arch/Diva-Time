@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Messagerie - DivaTime{% endblock %}
+
+{% block body %}
+<div class="container-fluid pb-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- En-tête messagerie -->
+            <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+                <h2 class="fw-bold mb-0" style="font-size: 1.5rem;">Messagerie d'Équipe</h2>
+                <span class="badge bg-white bg-opacity-50 text-dark rounded-pill border-0 shadow-sm px-3 py-2">
+                    <i class="fa-solid fa-comments me-2 text-primary"></i> {{ messages|length }} Notes
+                </span>
+            </div>
+
+            <!-- Conteneur messagerie -->
+            <div class="messenger-wrapper d-flex flex-column" style="height: calc(100vh - 220px);">
+                <!-- Flux messages -->
+                <div class="flex-grow-1 overflow-hidden d-flex flex-column mb-3">
+                    {{ include('messenger/_feed.html.twig') }}
+                </div>
+
+                <!-- Saisie message -->
+                <div class="glass-card p-3 shadow-lg border-0 mb-2">
+                    <form method="post" 
+                          data-turbo-frame="messages" 
+                          data-controller="messenger-form" 
+                          data-action="turbo:submit-end->messenger-form#clear"
+                          class="d-flex gap-3 align-items-center">
+                        <input type="hidden" name="_token" value="{{ csrf_token('messenger') }}">
+                        <div class="flex-grow-1">
+                            <textarea name="content" id="content" class="form-control chat-input" 
+                                      rows="1" placeholder="Tapez votre message ici..." required 
+                                      style="background: rgba(255,255,255,0.7); border-radius: 25px; border: 1px solid var(--glass-border); padding: 12px 25px; resize: none; min-height: 50px;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm p-0" 
+                                style="width: 50px; height: 50px; flex-shrink: 0;">
+                            <i class="fa-solid fa-paper-plane" style="font-size: 1.2rem; transform: translateX(-2px);"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        overflow: hidden !important; 
+    }
+    .messenger-wrapper {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        padding: 10px;
+    }
+    .message-feed {
+        max-width: 100%;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(99, 102, 241, 0.2) transparent;
+    }
+    .message-feed::-webkit-scrollbar {
+        width: 6px;
+    }
+    .message-feed::-webkit-scrollbar-thumb {
+        background-color: rgba(99, 102, 241, 0.2);
+        border-radius: 10px;
+    }
+    .glass-card {
+        transition: transform 0.2s;
+    }
+    .chat-input:focus {
+        background: white !important;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15) !important;
+    }
+    .slide-in {
+        animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .form-control:focus {
+        background: white !important;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+        border-color: #6366f1 !important;
+    }
+</style>
+{% endblock %}

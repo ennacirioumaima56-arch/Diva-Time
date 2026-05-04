@@ -26,31 +26,44 @@ final class DashboardController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // Auto-fix for database schema issues (typos and missing NULL constraints)
-        $conn = $entityManager->getConnection();
-        try {
-            // Fix 'dete' typo if it exists
-            $conn->executeStatement('ALTER TABLE time_entry CHANGE dete date DATE NOT NULL');
-        } catch (\Exception $e) {}
+        return $this->render('dashboard/index.html.twig', $this->getDashboardData(
+            $timeEntryRepository,
+            $userRepository,
+            $projectRepository,
+            $entityManager
+        ));
+    }
 
-        try {
-            // Fix 'note' constraint if it's currently NOT NULL
-            $conn->executeStatement('ALTER TABLE time_entry MODIFY note TEXT NULL');
-        } catch (\Exception $e) {}
+    #[Route('/dashboard/content', name: 'app_dashboard_content')]
+    public function content(
+        TimeEntryRepository $timeEntryRepository,
+        UserRepository $userRepository,
+        ProjectRepository $projectRepository,
+        \Doctrine\ORM\EntityManagerInterface $entityManager
+    ): Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        return $this->render('dashboard/_content.html.twig', $this->getDashboardData(
+            $timeEntryRepository,
+            $userRepository,
+            $projectRepository,
+            $entityManager
+        ));
+    }
+
+    private function getDashboardData($timeEntryRepository, $userRepository, $projectRepository, $entityManager): array
+    {
         $user = $this->getUser();
         $isAdmin = $this->isGranted('ROLE_ADMIN');
 
-        // Logic for statistics
+        // Logique stats
         if ($isAdmin) {
-            // Admin sees global stats
             $timeEntries = $timeEntryRepository->findBy([], ['date' => 'DESC']);
             $totalUsersCount = $userRepository->count([]);
             $activeProjectsCount = $projectRepository->count(['isActive' => true]);
         } else {
-            // Regular user sees their own stats
             $timeEntries = $timeEntryRepository->findBy(['user' => $user], ['date' => 'DESC']);
-            $totalUsersCount = $userRepository->count([]); // Or maybe hide this for users?
+            $totalUsersCount = $userRepository->count([]);
             $activeProjectsCount = $projectRepository->count(['isActive' => true]);
         }
 
@@ -59,13 +72,71 @@ final class DashboardController extends AbstractController
             $totalHours += $entry->getHours();
         }
 
-        return $this->render('dashboard/index.html.twig', [
-            'totalHours' => $totalHours,
-            'activeProjectsCount' => $activeProjectsCount,
-            'totalUsersCount' => $totalUsersCount,
-            'recentEntries' => array_slice($timeEntries, 0, 8), // Show more entries on dashboard
-            'userName' => $user->getName() ?? $user->getEmail(),
-            'isAdmin' => $isAdmin
-        ]);
+        // === Données graphiques ===
+
+        // 1) Heures par jour - 7 derniers jours (jours en français)
+        $joursFr = ['Sun' => 'Dim', 'Mon' => 'Lun', 'Tue' => 'Mar', 'Wed' => 'Mer', 'Thu' => 'Jeu', 'Fri' => 'Ven', 'Sat' => 'Sam'];
+        $last7Days = [];
+        $hoursPerDay = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day = new \DateTimeImmutable("-{$i} days");
+            $engKey = $day->format('D d/m');
+            $frDay  = $joursFr[$day->format('D')] . ' ' . $day->format('d/m');
+            $last7Days[$engKey] = $frDay;
+            $hoursPerDay[$engKey] = 0;
+        }
+        foreach ($timeEntries as $entry) {
+            $label = $entry->getDate()->format('D d/m');
+            if (isset($hoursPerDay[$label])) {
+                $hoursPerDay[$label] += $entry->getHours();
+            }
+        }
+
+        // 2) Heures par projet
+        $projectHours = [];
+        $projectColors = [];
+        foreach ($timeEntries as $entry) {
+            $projectName = $entry->getProject()->getName();
+            $projectColor = $entry->getProject()->getColor();
+            if (!isset($projectHours[$projectName])) {
+                $projectHours[$projectName] = 0;
+                $projectColors[$projectName] = $projectColor;
+            }
+            $projectHours[$projectName] += $entry->getHours();
+        }
+
+        // 3) Statut des tâches
+        $taskRepo = $entityManager->getRepository(\App\Entity\Task::class);
+        $allTasks = $isAdmin
+            ? $taskRepo->findAll()
+            : $taskRepo->findBy(['assignedTo' => $user]);
+
+        $taskStats = ['pending' => 0, 'in_progress' => 0, 'completed' => 0];
+        foreach ($allTasks as $task) {
+            $s = $task->getStatus() ?? 'pending';
+            if (array_key_exists($s, $taskStats)) {
+                $taskStats[$s]++;
+            }
+        }
+        $totalTasksCount = count($allTasks);
+
+        return [
+            'totalHours'         => $totalHours,
+            'activeProjectsCount'=> $activeProjectsCount,
+            'totalUsersCount'    => $totalUsersCount,
+            'recentEntries'      => array_slice($timeEntries, 0, 8),
+            'userName'           => $user->getName() ?? $user->getEmail(),
+            'isAdmin'            => $isAdmin,
+            // Charts data
+            'chartDaysLabels'    => json_encode(array_values($last7Days)),
+            'chartDaysData'      => json_encode(array_values($hoursPerDay)),
+            'chartProjectLabels' => json_encode(array_keys($projectHours)),
+            'chartProjectData'   => json_encode(array_values($projectHours)),
+            'chartProjectColors' => json_encode(array_values($projectColors)),
+            'taskStatsPending'   => $taskStats['pending'],
+            'taskStatsInProgress'=> $taskStats['in_progress'],
+            'taskStatsCompleted' => $taskStats['completed'],
+            'totalTasks'         => $totalTasksCount,
+        ];
     }
 }

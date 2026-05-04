@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class TimeEntryController extends AbstractController
 {
 
-// Read :
+// Lecture données
 
     #[Route('/', name: 'app_time_entry_index', methods: ['GET'])]
     public function index(TimeEntryRepository $timeEntryRepository): Response
@@ -29,7 +29,7 @@ class TimeEntryController extends AbstractController
         ]);
     }
 
-// Create :
+// Création donnée
 
     #[Route('/new', name: 'app_time_entry_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -48,7 +48,7 @@ class TimeEntryController extends AbstractController
             $entityManager->persist($timeEntry);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Time entry created successfully.');
+            $this->addFlash('success', 'Entrée de temps créée avec succès.');
             return $this->redirectToRoute('app_time_entry_index');
         }
 
@@ -58,14 +58,14 @@ class TimeEntryController extends AbstractController
         ]);
     }
 
-// Edit :
+// Édition donnée
 
     #[Route('/{id}/edit', name: 'app_time_entry_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, TimeEntry $timeEntry, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY'); 
 
-        // determiner les permissions (Propriétaire ou Admin)
+        // Vérifier permissions
         if ($timeEntry->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Vous n\'avez pas la permission de modifier cette entrée.'); 
         }
@@ -76,7 +76,7 @@ class TimeEntryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {     
             $entityManager->flush();
 
-            $this->addFlash('success', 'Time entry modifié avec succès.');
+            $this->addFlash('success', 'Entrée de temps modifiée avec succès.');
             return $this->redirectToRoute('app_time_entry_index');
         }
 
@@ -87,7 +87,7 @@ class TimeEntryController extends AbstractController
     }
 
 
-// Delete :
+// Suppression donnée
     
     #[Route('/{id}', name: 'app_time_entry_delete', methods: ['POST'])]
     public function delete(Request $request, TimeEntry $timeEntry, EntityManagerInterface $entityManager): Response

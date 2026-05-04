@@ -19,18 +19,18 @@ class UserType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Full Name',
-                'attr' => ['placeholder' => 'Enter member name', 'class' => 'form-control rounded-3'],
+                'label' => 'Nom Complet',
+                'attr' => ['placeholder' => 'Entrez le nom du membre', 'class' => 'form-control rounded-3'],
             ])
             ->add('email', EmailType::class, [
-                'label' => 'Email Address',
-                'attr' => ['placeholder' => 'email@example.com', 'class' => 'form-control rounded-3'],
+                'label' => 'Adresse Email',
+                'attr' => ['placeholder' => 'email@exemple.com', 'class' => 'form-control rounded-3'],
             ])
             ->add('roles', ChoiceType::class, [
-                'label' => 'Access Level',
+                'label' => 'Niveau d\'accès',
                 'choices'  => [
-                    'Team Member' => 'ROLE_USER',
-                    'Administrator' => 'ROLE_ADMIN',
+                    'Membre de l\'équipe' => 'ROLE_USER',
+                    'Administrateur' => 'ROLE_ADMIN',
                 ],
                 'multiple' => false,
                 'expanded' => false,
@@ -38,17 +38,17 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'form-select rounded-3'],
             ])
             ->add('password', PasswordType::class, [
-                'label' => 'Password',
+                'label' => 'Mot de passe',
                 'mapped' => false,
                 'required' => $options['is_new'],
-                'attr' => ['placeholder' => 'Password', 'class' => 'form-control rounded-3'],
+                'attr' => ['placeholder' => 'Mot de passe', 'class' => 'form-control rounded-3'],
                 'constraints' => $options['is_new'] ? [
                     new NotBlank(['message' => 'Please enter a password']),
                     new Length(['min' => 6, 'minMessage' => 'Your password should be at least {{ limit }} characters', 'max' => 4096]),
                 ] : [],
             ])
             ->add('isVerified', null, [
-                'label' => 'Account Verified',
+                'label' => 'Compte Vérifié',
                 'attr' => ['class' => 'form-check-input'],
                 'row_attr' => ['class' => 'form-check form-switch ms-2 d-flex align-items-center gap-2'],
             ])

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramètres du compte - DivaTime{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="glass-card">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <i class="fa-solid fa-user-gear fs-4"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold mb-0">Paramètres du compte</h3>
+                    <p class="text-muted mb-0">Mettez à jour vos identifiants de sécurité</p>
+                </div>
+            </div>
+
+            <hr class="opacity-10 mb-4">
+
+            <div {{ stimulus_controller('password-visibility') }}>
+                {{ form_start(form) }}
+                    <div class="mb-4">
+                        {{ form_label(form.plainPassword.first, null, {'label_attr': {'class': 'form-label fw-semibold text-muted'}}) }}
+                        <div class="input-group">
+                            {{ form_widget(form.plainPassword.first, {'attr': {'data-password-visibility-target': 'password'}}) }}
+                            <button class="btn btn-outline-secondary border-muted" type="button" data-action="password-visibility#toggle">
+                                <i class="fa-solid fa-eye text-muted"></i>
+                            </button>
+                        </div>
+                        {{ form_errors(form.plainPassword.first) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.plainPassword.second, null, {'label_attr': {'class': 'form-label fw-semibold text-muted'}}) }}
+                        <div class="input-group">
+                            {{ form_widget(form.plainPassword.second, {'attr': {'data-password-visibility-target': 'password'}}) }}
+                            <button class="btn btn-outline-secondary border-muted" type="button" data-action="password-visibility#toggle">
+                                <i class="fa-solid fa-eye text-muted"></i>
+                            </button>
+                        </div>
+                        {{ form_errors(form.plainPassword.second) }}
+                    </div>
+
+                    <div class="mt-5">
+                        <button type="submit" class="btn btn-primary-glass w-100 py-3">
+                            <i class="fa-solid fa-shield-halved me-2"></i> Mettre à jour le mot de passe
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        
+        <div class="text-center mt-4 text-muted small">
+            <i class="fa-solid fa-lock me-1"></i> Votre connexion est cryptée et sécurisée.
+        </div>
+    </div>
+</div>
+{% endblock %}

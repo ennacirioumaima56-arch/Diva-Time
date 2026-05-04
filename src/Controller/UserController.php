@@ -33,7 +33,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Logic Hashing password
+            // Logique hachage
             $plainPassword = $form->get('password')->getData();
             if ($plainPassword) {
                 $user->setPassword(
@@ -41,17 +41,17 @@ class UserController extends AbstractController
                 );
             }
 
-            // Gestion roles
+            // Gestion rôles
             $roleSelection = $form->get('roles')->getData();
             $user->setRoles([$roleSelection]);
 
-            // Auto-verify admin-created users
+            // Vérification auto
             $user->setIsVerified(true);
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Member added successfully! They can now access the platform.');
+            $this->addFlash('success', 'Membre ajouté avec succès ! Il peut désormais accéder à la plateforme.');
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -64,13 +64,13 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
-        // On passe 'is_new' => false hit password machi obligatory f edit
+        // Mot passe
         $form = $this->createForm(UserType::class, $user, ['is_new' => false]);
         
-        // On remplit form role b dakchi li 3end l user deja (on prend le premier role)
+        // Rôle actuel
         $currentRoles = $user->getRoles();
         if (!empty($currentRoles)) {
-            // Normalement Symfony met tjours ROLE_USER, on cherche le plus haut ou le premier non-ROLE_USER
+            // Rôle principal
             $displayRole = in_array('ROLE_ADMIN', $currentRoles) ? 'ROLE_ADMIN' : 'ROLE_USER';
             $form->get('roles')->setData($displayRole);
         }
@@ -79,7 +79,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             
-            // Re-hash password ila tbdal
+            // Nouveau hachage
             $plainPassword = $form->get('password')->getData();
             if ($plainPassword) {
                 $user->setPassword(
@@ -87,13 +87,13 @@ class UserController extends AbstractController
                 );
             }
             
-            // Update roles
+            // Mise rôles
             $roleSelection = $form->get('roles')->getData();
             $user->setRoles([$roleSelection]);
 
             $entityManager->flush();
 
-            $this->addFlash('success', 'Member profile updated successfully.');
+            $this->addFlash('success', 'Profil du membre mis à jour avec succès.');
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -107,15 +107,15 @@ class UserController extends AbstractController
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
-            // Prevent self-deletion if current user is the one being deleted
+            // Empêcher suppression
             if ($user === $this->getUser()) {
-                $this->addFlash('danger', 'You cannot delete your own account.');
+                $this->addFlash('danger', 'Vous ne pouvez pas supprimer votre propre compte.');
                 return $this->redirectToRoute('app_user_index');
             }
 
             $entityManager->remove($user);
             $entityManager->flush();
-            $this->addFlash('success', 'Member has been removed from the team.');
+            $this->addFlash('success', 'Le membre a été retiré de l\'équipe.');
         }
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);

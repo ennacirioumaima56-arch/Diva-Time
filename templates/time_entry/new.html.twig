@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log Time - TimeTrack{% endblock %}
+{% block title %}Enregistrer le Temps - DivaTime{% endblock %}
 
 {% block body %}
 <div class="row justify-content-center">
@@ -9,11 +9,11 @@
             <a href="{{ path('app_time_entry_index') }}" class="btn btn-light rounded-circle shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <h2 class="fw-bold mb-0">Log Work Hours</h2>
+            <h2 class="fw-bold mb-0">Enregistrer les Heures de Travail</h2>
         </div>
 
         <div class="glass-card p-5">
-            {{ include('time_entry/_form.html.twig', {'button_label': 'Save Entry'}) }}
+            {{ include('time_entry/_form.html.twig', {'button_label': 'Enregistrer'}) }}
         </div>
     </div>
 </div>

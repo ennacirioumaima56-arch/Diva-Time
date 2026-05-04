@@ -1,140 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard - DivaTime{% endblock %}
+{% block title %}Tableau de bord - DivaTime{% endblock %}
 
 {% block body %}
-<!-- Welcome Section -->
+<!-- Section accueil -->
 <div class="mb-5">
     <div class="d-flex align-items-center gap-3 mb-2">
-        <h2 class="fw-bold mb-0">Hello, {{ userName }}!</h2>
+        <h2 class="fw-bold mb-0">Bonjour, {{ userName }}!</h2>
         {% if isAdmin %}
             <span class="badge bg-warning text-dark border-0 rounded-pill px-3 py-2 small fw-bold shadow-sm">
-                <i class="fa-solid fa-shield-halved me-1"></i> ADMIN VIEW
+                <i class="fa-solid fa-shield-halved me-1"></i> VUE ADMIN
             </span>
         {% endif %}
     </div>
-    <p class="text-muted">Here is your professional overview for today.</p>
+    <p class="text-muted">Voici votre aperçu professionnel pour aujourd'hui.</p>
 </div>
 
-<!-- Stats Overview -->
-<div class="row g-4 mb-5">
-    <div class="col-12 col-md-4">
-        <div class="glass-card h-100 border-0 shadow-sm position-relative overflow-hidden">
-            <div class="position-absolute opacity-10" style="right: -10px; bottom: -10px; font-size: 5rem;">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-            <div class="small text-muted mb-1 text-uppercase fw-bold letter-spacing-1">
-                {% if isAdmin %}Total Team Hours{% else %}Your Total Hours{% endif %}
-            </div>
-            <div class="d-flex align-items-center gap-3 mt-2">
-                <div class="h1 fw-bold mb-0 text-primary">{{ totalHours }}</div>
-                <div class="badge bg-primary-subtle text-primary rounded-pill px-3">Hrs</div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-12 col-md-4">
-        <div class="glass-card h-100 border-0 shadow-sm position-relative overflow-hidden">
-            <div class="position-absolute opacity-10" style="right: -10px; bottom: -10px; font-size: 5rem;">
-                <i class="fa-solid fa-diagram-project"></i>
-            </div>
-            <div class="small text-muted mb-1 text-uppercase fw-bold letter-spacing-1">Active Projects</div>
-            <div class="d-flex align-items-center gap-3 mt-2">
-                <div class="h1 fw-bold mb-0 text-info">{{ activeProjectsCount }}</div>
-                <div class="badge bg-info-subtle text-info rounded-pill px-3">Live</div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-12 col-md-4">
-        <div class="glass-card h-100 border-0 shadow-sm position-relative overflow-hidden">
-            <div class="position-absolute opacity-10" style="right: -10px; bottom: -10px; font-size: 5rem;">
-                <i class="fa-solid fa-users"></i>
-            </div>
-            <div class="small text-muted mb-1 text-uppercase fw-bold letter-spacing-1">Team Members</div>
-            <div class="d-flex align-items-center gap-3 mt-2">
-                <div class="h1 fw-bold mb-0 text-success">{{ totalUsersCount }}</div>
-                <div class="badge bg-success-subtle text-success rounded-pill px-3">Active</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Activity -->
-<div class="row">
-    <div class="col-12">
-        <div class="glass-card border-0 shadow-sm overflow-hidden p-0">
-            <div class="d-flex justify-content-between align-items-center p-4 border-bottom bg-white bg-opacity-25">
-                <h5 class="fw-bold mb-0">
-                    <i class="fa-solid fa-list-check text-primary me-2"></i>
-                    {% if isAdmin %}Recent Team Activity{% else %}Your Recent Entries{% endif %}
-                </h5>
-                <a href="{{ path('app_time_entry_index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                    View All <i class="fa-solid fa-arrow-right small ms-1"></i>
-                </a>
-            </div>
-            
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light bg-opacity-50">
-                        <tr>
-                            <th class="ps-4 border-0 text-muted small text-uppercase py-3">Date</th>
-                            {% if isAdmin %}<th class="border-0 text-muted small text-uppercase py-3">User</th>{% endif %}
-                            <th class="border-0 text-muted small text-uppercase py-3">Project</th>
-                            <th class="border-0 text-muted small text-uppercase py-3">Duration</th>
-                            <th class="border-0 text-muted small text-uppercase py-3">Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in recentEntries %}
-                            <tr class="border-bottom-0">
-                                <td class="ps-4 py-3">
-                                    <div class="fw-bold">{{ entry.date|date('d M Y') }}</div>
-                                    <div class="small text-muted d-md-none">{{ entry.project.name }}</div>
-                                </td>
-                                {% if isAdmin %}
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center small" style="width: 24px; height: 24px; font-size: 10px;">
-                                            {{ entry.user.name|slice(0, 1)|upper }}
-                                        </div>
-                                        <span class="small fw-medium">{{ entry.user.name }}</span>
-                                    </div>
-                                </td>
-                                {% endif %}
-                                <td>
-                                    <span class="badge border fw-medium rounded-pill px-3 py-2" 
-                                          style="border-color: {{ entry.project.color }}40 !important; color: {{ entry.project.color }}; background: {{ entry.project.color }}10;">
-                                        <i class="fa-solid fa-circle small me-1 opacity-50" style="color: {{ entry.project.color }};"></i>
-                                        {{ entry.project.name }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark">{{ entry.hours }} <small class="text-muted fw-normal">h</small></div>
-                                </td>
-                                <td class="text-muted">
-                                    <div class="text-truncate small" style="max-width: 250px;">
-                                        {{ entry.note|default('No notes provided') }}
-                                    </div>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="{% if isAdmin %}5{% else %}4{% endif %}" class="text-center py-5">
-                                    <div class="my-3 opacity-25">
-                                        <i class="fa-solid fa-clipboard-list h1"></i>
-                                    </div>
-                                    <p class="text-muted">No activities recorded yet.</p>
-                                    <a href="{{ path('app_time_entry_new') }}" class="btn btn-primary-glass btn-sm">Start Tracking</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Zone stats -->
+{{ include('dashboard/_content.html.twig') }}
 
 <style>
     .letter-spacing-1 { letter-spacing: 0.5px; }
@@ -144,4 +27,93 @@
         cursor: default;
     }
 </style>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+(function() {
+    const chartDaysLabels  = {{ chartDaysLabels|raw }};
+    const chartDaysData    = {{ chartDaysData|raw }};
+    const chartProjectLabels = {{ chartProjectLabels|raw }};
+    const chartProjectData   = {{ chartProjectData|raw }};
+    const chartProjectColors = {{ chartProjectColors|raw }};
+
+    function renderCharts() {
+        if (typeof Chart === 'undefined') return;
+
+        // Détruire anciens graphiques
+        ['hoursBarChart', 'projectDoughnutChart'].forEach(id => {
+            const existing = Chart.getChart(id);
+            if (existing) existing.destroy();
+        });
+
+        // ─── Bar chart: Heures par jour ─────────────────────────────────────
+        const barCtx = document.getElementById('hoursBarChart');
+        if (barCtx) {
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: chartDaysLabels,
+                    datasets: [{
+                        label: 'Heures',
+                        data: chartDaysData,
+                        backgroundColor: 'rgba(99,102,241,0.2)',
+                        borderColor: 'rgba(99,102,241,1)',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                        hoverBackgroundColor: 'rgba(168,85,247,0.35)',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} h` } }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#64748b' } },
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 }, color: '#64748b' } }
+                    }
+                }
+            });
+        }
+
+        // ─── Doughnut chart: Heures par projet ──────────────────────────────
+        const doughnutCtx = document.getElementById('projectDoughnutChart');
+        if (doughnutCtx && chartProjectData.length > 0) {
+            new Chart(doughnutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: chartProjectLabels,
+                    datasets: [{
+                        data: chartProjectData,
+                        backgroundColor: chartProjectColors.map(c => c + '99'),
+                        borderColor: chartProjectColors,
+                        borderWidth: 2,
+                        hoverOffset: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'right', labels: { font: { size: 11 }, color: '#334155', padding: 12, boxWidth: 12 } },
+                        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} h` } }
+                    }
+                }
+            });
+        } else if (doughnutCtx) {
+            doughnutCtx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><i class="fa-solid fa-chart-pie opacity-25 fa-3x mb-3 d-block"></i>Aucune donnée</div>';
+        }
+    }
+
+    // Exécuter au chargement initial ET à chaque navigation Turbo
+    document.addEventListener('DOMContentLoaded', renderCharts);
+    document.addEventListener('turbo:load', renderCharts);
+})();
+</script>
 {% endblock %}

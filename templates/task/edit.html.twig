@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Éditer la Tâche - DivaTime{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="glass-card">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <a href="{{ path('app_task_index') }}" class="btn btn-sm btn-outline-secondary rounded-circle">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <h2 class="fw-bold mb-0">{% if isAdmin %}Éditer les Détails de la Tâche{% else %}Mettre à jour le Statut{% endif %}</h2>
+            </div>
+
+            {{ form_start(form) }}
+                {% if isAdmin %}
+                    <div class="mb-4">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description) }}
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            {{ form_label(form.project) }}
+                            {{ form_widget(form.project) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_label(form.assignedTo) }}
+                            {{ form_widget(form.assignedTo) }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="mb-4">
+                    {{ form_label(form.status) }}
+                    {{ form_widget(form.status) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary-glass w-100 py-3 rounded-3 mt-2">
+                    <i class="fa-solid fa-save me-2"></i> Mettre à jour la Tâche
+                </button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
